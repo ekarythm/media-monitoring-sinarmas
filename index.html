@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Media Monitoring Sinar Mas — Tempo Data Science</title>
+<meta name="description" content="Dashboard pemantauan konten negatif terkait Sinar Mas Group di media online dan media sosial.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230E9AA7'/%3E%3Cpath d='M8 22V10l8 7 8-7v12' fill='none' stroke='white' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="mm">
+<header class="mm-top" id="hero">
+  <div class="mm-top-l">
+    <span class="mm-brand">Tempo Data Science · Media Intelligence</span>
+    <h1 class="mm-title" id="judul">Media Monitoring Sinar Mas</h1>
+    <div class="mm-updated">Data terakhir: <span data-draw="updated">—</span>, pukul 16.00 WIB</div>
+  </div>
+  <div class="mm-controls">
+    <div class="mm-seg" role="group" aria-label="Rentang waktu" id="rentang">
+      <button type="button" class="mm-seg-b" data-mode="D">Harian</button>
+      <button type="button" class="mm-seg-b" data-mode="W">Mingguan</button>
+      <button type="button" class="mm-seg-b" data-mode="M">Bulanan</button>
+      <button type="button" class="mm-seg-b" data-mode="Y">Tahunan</button>
+    </div>
+    <div class="mm-nav" id="navigasi-periode">
+      <button type="button" class="mm-step" data-step="-1" aria-label="Periode sebelumnya">‹</button>
+      <select class="dash-select mm-select" data-draw="periode" aria-label="Pilih periode"></select>
+      <button type="button" class="mm-step" data-step="1" aria-label="Periode berikutnya">›</button>
+    </div>
+  </div>
+</header>
+
+<p class="mm-loaderr" hidden>Sebagian data gagal dimuat. Muat ulang halaman, atau jika membuka file langsung dari komputer, jalankan lewat server lokal.</p>
+
+<div class="mm-filter" id="saringan-atas">
+  <span class="mm-flabel">Jenis sumber</span>
+  <div class="mm-pills" role="group" aria-label="Jenis sumber">
+    <button type="button" class="mm-pill" data-sal="">Semua</button>
+    <button type="button" class="mm-pill" data-sal="Media Online">Media online</button>
+    <button type="button" class="mm-pill" data-sal="Threads">Threads</button>
+    <button type="button" class="mm-pill" data-sal="X">X</button>
+    <button type="button" class="mm-pill" data-sal="Facebook">Facebook</button>
+  </div>
+  <input class="mm-search" type="search" placeholder="Cari judul, akun, atau isu" aria-label="Cari konten">
+  <div class="mm-chips" data-draw="chips"></div>
+  <button type="button" class="mm-reset">Hapus saringan</button>
+</div>
+
+<section class="mm-card mm-insight" id="ringkasan-kalimat">
+  <span class="mm-eyebrow">Ringkasan</span>
+  <p class="mm-lede">Pada <b data-draw="s-label">—</b> terpantau <b data-draw="s-total">—</b> konten bernada negatif dari <b data-draw="s-hari">—</b> hari pemantauan. Isu terbesar adalah <b data-draw="s-kluster">—</b>, yaitu <b data-draw="s-pct">—</b> dari seluruh konten negatif, dan lini yang paling banyak disorot adalah <b data-draw="s-lini">—</b>.</p>
+</section>
+
+<section class="mm-kpis" id="kpi">
+  <article class="mm-card mm-kpi" id="kpi-entri">
+    <h3>Total temuan</h3>
+    <div class="mm-num" data-draw="k-entri">—</div>
+    <p class="mm-def">Semua berita dan unggahan yang cocok dengan kata kunci, sebelum disaring.</p>
+  </article>
+  <article class="mm-card mm-kpi mm-kpi-main" id="kpi-total">
+    <h3>Konten negatif</h3>
+    <div class="mm-num" data-draw="k-total">—</div>
+    <p class="mm-sub mm-d-a"><b data-draw="k-delta">—</b> dibanding <span data-draw="k-prev">—</span></p>
+    <p class="mm-sub mm-d-b">Periode pertama, belum ada pembanding</p>
+    <p class="mm-def">Temuan yang lolos saringan sebagai kandidat alert.</p>
+  </article>
+  <article class="mm-card mm-kpi" id="kpi-pct">
+    <h3>Porsi negatif</h3>
+    <div class="mm-num" data-draw="k-pct">—</div>
+    <p class="mm-def">Konten negatif dibagi total temuan.</p>
+  </article>
+  <article class="mm-card mm-kpi" id="kpi-eng">
+    <h3>Interaksi</h3>
+    <div class="mm-num" data-draw="k-eng">—</div>
+    <p class="mm-def">Suka, unggah ulang, dan balasan pada konten negatif saat data diambil.</p>
+  </article>
+  <article class="mm-card mm-kpi" id="kpi-views">
+    <h3>Tayangan</h3>
+    <div class="mm-num" data-draw="k-views">—</div>
+    <p class="mm-def">Tayangan unggahan X saat data diambil. Threads tidak menampilkan tayangan.</p>
+  </article>
+</section>
+
+<section class="mm-w" id="widget">
+  <div class="mm-card mm-s8" id="tren">
+    <div class="mm-wh"><h3>Tren konten negatif</h3><p>Per jam pada tampilan harian, dalam jendela 16.00 hingga 16.00 WIB. Per hari atau per bulan pada tampilan lain. Klik batang untuk membuka harinya.</p></div>
+    <div class="mm-chart mm-h-tren" data-draw="tren"></div>
+  </div>
+  <div class="mm-card mm-s4" id="sentimen">
+    <div class="mm-wh"><h3>Sentimen</h3><p>Semua temuan kata kunci menurut hasil penyaringan.</p></div>
+    <div class="mm-chart mm-h-donut" data-draw="sentimen"></div>
+  </div>
+
+  <div class="mm-card mm-s4" id="sov">
+    <div class="mm-wh"><h3>Share of voice lini bisnis</h3><p>Porsi konten negatif tiap lini Sinar Mas. Klik untuk menyaring.</p></div>
+    <div class="mm-chart mm-h-donut" data-draw="sov"></div>
+  </div>
+  <div class="mm-card mm-s4" id="jenis-sumber">
+    <div class="mm-wh"><h3>Konten menurut jenis sumber</h3><p>Jumlah konten negatif per kanal.</p></div>
+    <div class="mm-list" data-draw="kanal"></div>
+  </div>
+  <div class="mm-card mm-s4" id="isu">
+    <div class="mm-wh"><h3>Isu teratas</h3><p>Kelompok isu menurut penilaian analis. Klik untuk menyaring.</p></div>
+    <div class="mm-list" data-draw="isu"></div>
+  </div>
+
+  <div class="mm-card mm-s4" id="sumber-aktif">
+    <div class="mm-wh"><h3>Sumber teratas</h3><p>Media dan akun dengan konten negatif terbanyak.</p></div>
+    <div class="mm-list" data-draw="sumber"></div>
+  </div>
+  <div class="mm-card mm-s4" id="kata-kunci">
+    <div class="mm-wh"><h3>Kata teratas</h3><p>Kata yang paling sering muncul di judul dan isi unggahan. Klik untuk mencari.</p></div>
+    <div class="mm-chart" data-draw="kata"></div>
+  </div>
+  <div class="mm-card mm-s4" id="jangkauan">
+    <div class="mm-wh"><h3>Jangkauan tertinggi</h3><p>Unggahan dengan tayangan terbanyak.</p></div>
+    <div class="mm-list" data-draw="jangkauan"></div>
+  </div>
+
+  <div class="mm-card mm-s7" id="matriks">
+    <div class="mm-wh"><h3>Isu menurut lini bisnis</h3><p>Makin pekat selnya, makin banyak konten. Klik sel untuk menyaring seluruh halaman.</p></div>
+    <div class="mm-chart mm-scroll" data-draw="matriks"></div>
+  </div>
+  <aside class="mm-card mm-s5 mm-spot" id="sorotan">
+    <div class="mm-wh"><h3>Konten sorotan</h3><p>Konten dengan tayangan tertinggi, atau baris yang dipilih di daftar.</p></div>
+    <div data-draw="sorotan">—</div>
+  </aside>
+</section>
+
+<section class="mm-sec" id="analisis">
+  <div class="mm-head"><h2>Temuan dan rekomendasi analis</h2>
+  <p>Diambil dari alert hari pemantauan terakhir dalam periode terpilih, yaitu <b data-draw="brief-tgl">—</b>. Klaim dari akun dan media ditulis sebagai klaim, bukan fakta.</p></div>
+  <div class="mm-tabs" role="tablist" aria-label="Kanal analisis" id="tab-kanal">
+    <button type="button" class="mm-tab" role="tab" data-tab="Media Online">Media online</button>
+    <button type="button" class="mm-tab" role="tab" data-tab="Media Sosial">Media sosial</button>
+  </div>
+  <div class="mm-duo">
+    <div class="mm-card" id="temuan"><div class="mm-wh"><h3>Temuan</h3></div><div class="mm-brief" data-draw="brief-a"></div></div>
+    <div class="mm-card mm-card-acc" id="rekomendasi"><div class="mm-wh"><h3>Rekomendasi</h3></div><div class="mm-brief" data-draw="brief-r"></div></div>
+  </div>
+</section>
+
+<section class="mm-sec" id="daftar">
+  <div class="mm-head"><h2>Daftar konten</h2><p>Seluruh konten negatif dalam periode, terbaru di atas. Klik baris untuk melihat rinciannya di Konten sorotan.</p></div>
+  <div class="mm-card mm-tablewrap">
+    <table class="mm-table" id="tabel-konten">
+      <thead><tr><th>Waktu</th><th>Kanal</th><th>Sumber</th><th>Judul atau isi</th><th>Lini</th><th>Isu</th><th class="mm-r">Tayangan</th></tr></thead>
+      <tbody data-draw="feed"></tbody>
+    </table>
+  </div>
+</section>
+
+<details class="mm-notes" id="metodologi">
+  <summary>Metodologi dan batasan data</summary>
+  <p>Satu hari pemantauan mencakup konten sejak pukul 16.00 WIB hari sebelumnya sampai pukul 16.00 WIB hari laporan. Pencarian memakai kata kunci Sinarmas, Sinar Mas, Bank Sinarmas, Sinar Mas Land, BSD, APP, GAR, Smartfren, MyRepublic, Filma, dan Paseo di media online, Threads, dan X.</p>
+  <p>Konten netral, tanpa sentimen, atau promosi dibuang. Konten yang tersisa berstatus kandidat sampai diputuskan reviewer. Sentimen dan pengelompokan isu adalah penilaian analis, bukan label otomatis dari platform. Konten yang menyangkut dua lini bisnis dihitung pada lini pertama.</p>
+  <p>Angka tayangan, suka, dan unggah ulang adalah angka saat data diambil dan hanya tersedia untuk sebagian unggahan. Tampilan mingguan, bulanan, dan tahunan menjumlahkan hari pemantauan yang sudah masuk, sehingga periode yang baru berisi sedikit hari belum mencerminkan periode penuh.</p>
+  <p>Data 5 Oktober sampai 11 November 2026 disalin dari alert harian dan sheet pemantauan, bukan dari tabel per konten. Untuk periode itu hanya konten negatif yang tercatat, sehingga Total temuan sama dengan Konten negatif dan Porsi negatif terbaca 100%. Jam unggah, sebagian nama akun, dan sebagian angka interaksi juga tidak tercatat. Unggahan 21 Oktober, 10 November, dan 11 November sebagian hanya diklasifikasikan per lini bisnis, sehingga isunya diisi dari tema alert hari itu. Tidak ada data 23 Oktober sampai 9 November.</p>
+  <p>Data mentah dapat diunduh: <a href="data/entries.json">konten terbaru</a>, <a href="data/riwayat.json">riwayat konten</a>, <a href="data/briefs.json">temuan terbaru</a>, <a href="data/briefs_riwayat.json">riwayat temuan</a>.</p>
+</details>
+<footer class="mm-foot">Tempo Data Science · Laporan pemantauan media untuk Sinar Mas Group</footer>
+</div>
+<script src="vendor/d3.min.js"></script>
+<script src="dash.js"></script>
+<script src="calc.js"></script>
+<script src="app.js"></script>
+<script>dash._start();</script>
+</body>
+</html>
