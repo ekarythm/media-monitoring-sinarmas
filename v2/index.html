@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Media Monitoring Sinar Mas · Versi 2 — Tempo Data Science</title>
+<meta name="description" content="Dashboard pemantauan konten negatif terkait Sinar Mas Group di media online dan media sosial.">
+<script>
+(function () {
+  var t; try { t = localStorage.getItem('mm-theme'); } catch (e) {}
+  if (t !== 'light' && t !== 'dark') t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', t);
+  document.documentElement.classList.add('is-loading');
+})();
+</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23D61D23'/%3E%3Cpath d='M9 10h14M16 10v13' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;600&family=Fira+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-dash" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></symbol>
+    <symbol id="i-trend" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></symbol>
+    <symbol id="i-pie" viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8M16 17H8M10 9H8"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><path d="M12 15V3"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2m-7.07-17.07 1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-ext" viewBox="0 0 24 24"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+    <symbol id="i-sort" viewBox="0 0 24 24"><path d="m21 16-4 4-4-4M17 20V4M3 8l4-4 4 4M7 4v16"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+    <symbol id="i-table" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M12 3v18"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/></symbol>
+    <symbol id="i-inbox" viewBox="0 0 24 24"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
+    <symbol id="i-percent" viewBox="0 0 24 24"><path d="M19 5 5 19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></symbol>
+  </defs>
+</svg>
+
+<a class="skip" href="#konten">Lewati ke konten</a>
+
+<div class="app">
+  <aside class="side" id="side" aria-label="Navigasi utama">
+    <div class="side-brand">
+      <span class="mark" aria-hidden="true">T</span>
+      <div class="side-names">
+        <span class="side-org">Tempo Data Science</span>
+        <span class="side-prod">Media Intelligence</span>
+      </div>
+      <button type="button" class="icon-btn side-close" aria-label="Tutup menu"><svg class="ic"><use href="#i-x"/></svg></button>
+    </div>
+    <nav class="side-nav" aria-label="Bagian dashboard">
+      <a class="nav-a" href="#sec-ringkasan"><svg class="ic"><use href="#i-dash"/></svg><span>Ringkasan</span></a>
+      <a class="nav-a" href="#sec-tren"><svg class="ic"><use href="#i-trend"/></svg><span>Tren &amp; sentimen</span></a>
+      <a class="nav-a" href="#sec-isu"><svg class="ic"><use href="#i-pie"/></svg><span>Lini bisnis &amp; isu</span></a>
+      <a class="nav-a" href="#sec-sumber"><svg class="ic"><use href="#i-users"/></svg><span>Sumber &amp; jangkauan</span></a>
+      <a class="nav-a" href="#sec-matriks"><svg class="ic"><use href="#i-grid"/></svg><span>Matriks isu</span></a>
+      <a class="nav-a" href="#sec-analisis"><svg class="ic"><use href="#i-file"/></svg><span>Temuan &amp; rekomendasi</span></a>
+      <a class="nav-a" href="#sec-daftar"><svg class="ic"><use href="#i-list"/></svg><span>Daftar konten</span></a>
+      <a class="nav-a" href="#sec-metodologi"><svg class="ic"><use href="#i-info"/></svg><span>Metodologi</span></a>
+    </nav>
+    <div class="side-foot">
+      <div class="side-meta">
+        <span class="side-meta-l">Data terakhir</span>
+        <span class="side-meta-v" data-draw="updated">—</span>
+        <span class="side-meta-l">Ditutup pukul 16.00 WIB</span>
+      </div>
+      <a class="side-v1" href="../">Buka versi 1</a>
+    </div>
+  </aside>
+  <div class="scrim" hidden></div>
+
+  <div class="main">
+    <header class="top">
+      <div class="top-row">
+        <button type="button" class="icon-btn menu-btn" aria-label="Buka menu" aria-controls="side" aria-expanded="false"><svg class="ic"><use href="#i-menu"/></svg></button>
+        <div class="top-title">
+          <h1>Media Monitoring Sinar Mas</h1>
+          <p class="top-sub" data-draw="top-sub">Memuat data…</p>
+        </div>
+        <div class="top-controls">
+          <div class="seg" role="group" aria-label="Rentang waktu">
+            <button type="button" class="seg-b" data-mode="D">Harian</button>
+            <button type="button" class="seg-b" data-mode="W">Mingguan</button>
+            <button type="button" class="seg-b" data-mode="M">Bulanan</button>
+            <button type="button" class="seg-b" data-mode="Y">Tahunan</button>
+          </div>
+          <div class="stepper">
+            <button type="button" class="icon-btn step" data-step="-1" aria-label="Periode sebelumnya"><svg class="ic"><use href="#i-left"/></svg></button>
+            <label class="sr-only" for="periode">Pilih periode</label>
+            <select id="periode" class="sel" data-draw="periode"></select>
+            <button type="button" class="icon-btn step" data-step="1" aria-label="Periode berikutnya"><svg class="ic"><use href="#i-right"/></svg></button>
+          </div>
+          <button type="button" class="icon-btn share-btn" aria-label="Salin tautan tampilan ini"><svg class="ic"><use href="#i-link"/></svg></button>
+          <button type="button" class="icon-btn theme-btn" aria-label="Ganti tema terang atau gelap"><svg class="ic ic-sun"><use href="#i-sun"/></svg><svg class="ic ic-moon"><use href="#i-moon"/></svg></button>
+        </div>
+      </div>
+      <div class="filter-row" role="region" aria-label="Saringan">
+        <div class="search">
+          <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg>
+          <label class="sr-only" for="cari">Cari konten</label>
+          <input id="cari" class="mm-search" type="search" placeholder="Cari judul, akun, atau isu" autocomplete="off">
+        </div>
+        <div class="pills" role="group" aria-label="Jenis sumber" data-draw="pills"></div>
+        <div class="chips" data-draw="chips" aria-live="polite"></div>
+        <button type="button" class="btn-ghost reset"><svg class="ic"><use href="#i-reset"/></svg>Hapus saringan</button>
+      </div>
+    </header>
+
+    <p class="loaderr" hidden><svg class="ic"><use href="#i-alert"/></svg>Sebagian data gagal dimuat. Muat ulang halaman.</p>
+
+    <main id="konten" class="content" tabindex="-1">
+      <section id="sec-ringkasan" class="sec" aria-labelledby="h-ringkasan">
+        <h2 id="h-ringkasan" class="sr-only">Ringkasan</h2>
+        <div class="card insight">
+          <div class="insight-main">
+            <span class="eyebrow">Ringkasan periode</span>
+            <p class="lede">Pada <b data-draw="s-label">—</b> terpantau <b class="num" data-draw="s-total">—</b> konten bernada negatif dari <b class="num" data-draw="s-hari">—</b> hari pemantauan. Isu terbesar adalah <b data-draw="s-kluster">—</b> (<b class="num" data-draw="s-pct">—</b> dari konten negatif), dan lini yang paling banyak disorot adalah <b data-draw="s-lini">—</b>.</p>
+          </div>
+          <dl class="facts" data-draw="facts"></dl>
+        </div>
+
+        <div class="kpis">
+          <article class="card kpi">
+            <div class="kpi-h"><svg class="ic" aria-hidden="true"><use href="#i-inbox"/></svg><h3>Total temuan</h3></div>
+            <div class="kpi-b" data-draw="kpi-entri"></div>
+            <p class="kpi-def">Semua berita dan unggahan yang cocok dengan kata kunci, sebelum disaring.</p>
+          </article>
+          <article class="card kpi kpi-main">
+            <div class="kpi-h"><svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg><h3>Konten negatif</h3></div>
+            <div class="kpi-b" data-draw="kpi-total"></div>
+            <p class="kpi-def">Temuan yang lolos saringan sebagai kandidat alert.</p>
+          </article>
+          <article class="card kpi">
+            <div class="kpi-h"><svg class="ic" aria-hidden="true"><use href="#i-percent"/></svg><h3>Porsi negatif</h3></div>
+            <div class="kpi-b" data-draw="kpi-pct"></div>
+            <p class="kpi-def">Konten negatif dibagi total temuan. Perubahan dalam poin persentase.</p>
+          </article>
+          <article class="card kpi">
+            <div class="kpi-h"><svg class="ic" aria-hidden="true"><use href="#i-heart"/></svg><h3>Interaksi</h3></div>
+            <div class="kpi-b" data-draw="kpi-eng"></div>
+            <p class="kpi-def">Suka, unggah ulang, dan balasan pada konten negatif saat data diambil.</p>
+          </article>
+          <article class="card kpi">
+            <div class="kpi-h"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg><h3>Tayangan</h3></div>
+            <div class="kpi-b" data-draw="kpi-views"></div>
+            <p class="kpi-def">Tayangan unggahan X saat data diambil. Threads tidak menampilkan tayangan.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="sec-tren" class="sec grid" aria-labelledby="h-tren">
+        <div class="card span-8">
+          <div class="card-h">
+            <div>
+              <h2 id="h-tren">Tren konten negatif</h2>
+              <p>Per jam pada tampilan harian (jendela 16.00–16.00 WIB), per hari atau per bulan pada tampilan lain. Klik batang untuk membuka periodenya.</p>
+            </div>
+            <div class="seg seg-sm" role="group" aria-label="Tampilan tren">
+              <button type="button" class="seg-b view-b" data-view="chart" aria-label="Tampilkan grafik"><svg class="ic"><use href="#i-chart"/></svg></button>
+              <button type="button" class="seg-b view-b" data-view="table" aria-label="Tampilkan tabel"><svg class="ic"><use href="#i-table"/></svg></button>
+            </div>
+          </div>
+          <div class="chart h-trend" data-draw="tren"></div>
+        </div>
+        <div class="card span-4">
+          <div class="card-h"><div><h2>Sentimen</h2><p>Semua temuan kata kunci menurut hasil penyaringan.</p></div></div>
+          <div class="chart h-donut" data-draw="sentimen"></div>
+        </div>
+      </section>
+
+      <section id="sec-isu" class="sec grid" aria-labelledby="h-isu">
+        <div class="card span-5">
+          <div class="card-h"><div><h2 id="h-isu">Share of voice lini bisnis</h2><p>Porsi konten negatif tiap lini Sinar Mas. Klik untuk menyaring.</p></div></div>
+          <div data-draw="lini"></div>
+        </div>
+        <div class="card span-7">
+          <div class="card-h"><div><h2>Isu teratas</h2><p>Kelompok isu menurut penilaian analis. Klik untuk menyaring.</p></div></div>
+          <div data-draw="isu"></div>
+        </div>
+      </section>
+
+      <section id="sec-sumber" class="sec grid" aria-labelledby="h-sumber">
+        <div class="card span-4">
+          <div class="card-h"><div><h2 id="h-sumber">Jenis sumber</h2><p>Konten negatif per kanal. Klik untuk menyaring.</p></div></div>
+          <div data-draw="kanal"></div>
+        </div>
+        <div class="card span-4">
+          <div class="card-h"><div><h2>Sumber teratas</h2><p>Media dan akun dengan konten negatif terbanyak.</p></div></div>
+          <div data-draw="sumber"></div>
+        </div>
+        <div class="card span-4">
+          <div class="card-h"><div><h2>Jangkauan tertinggi</h2><p>Unggahan dengan tayangan terbanyak. Klik untuk melihat detail.</p></div></div>
+          <div data-draw="jangkauan"></div>
+        </div>
+        <div class="card span-12">
+          <div class="card-h">
+            <div><h2>Kata teratas</h2><p>Kata yang paling sering muncul di judul dan isi unggahan. Klik kata untuk mencarinya.</p></div>
+            <div class="seg seg-sm" role="group" aria-label="Tampilan kata">
+              <button type="button" class="seg-b cloud-b" data-cloud="cloud">Awan</button>
+              <button type="button" class="seg-b cloud-b" data-cloud="list">Daftar</button>
+            </div>
+          </div>
+          <div data-draw="kata"></div>
+        </div>
+      </section>
+
+      <section id="sec-matriks" class="sec grid" aria-labelledby="h-matriks">
+        <div class="card span-7">
+          <div class="card-h"><div><h2 id="h-matriks">Isu menurut lini bisnis</h2><p>Makin pekat sel, makin banyak konten. Klik sel untuk menyaring seluruh halaman.</p></div></div>
+          <div class="scroll-x" data-draw="matriks"></div>
+        </div>
+        <aside class="card span-5 spot">
+          <div class="card-h"><div><h2>Konten sorotan</h2><p>Konten dengan tayangan tertinggi dalam saringan aktif.</p></div></div>
+          <div data-draw="sorotan"></div>
+        </aside>
+      </section>
+
+      <section id="sec-analisis" class="sec" aria-labelledby="h-analisis">
+        <div class="sec-h">
+          <h2 id="h-analisis">Temuan dan rekomendasi analis</h2>
+          <p>Dari alert hari pemantauan terakhir dalam periode terpilih, yaitu <b data-draw="brief-tgl">—</b>. Klaim dari akun dan media ditulis sebagai klaim, bukan fakta.</p>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Kanal analisis">
+          <button type="button" class="tab" role="tab" id="tab-mo" data-tab="Media Online" aria-controls="panel-brief">Media online</button>
+          <button type="button" class="tab" role="tab" id="tab-ms" data-tab="Media Sosial" aria-controls="panel-brief">Media sosial</button>
+        </div>
+        <div class="grid" id="panel-brief" role="tabpanel">
+          <div class="card span-6"><div class="card-h"><div><h3>Temuan</h3></div></div><div class="brief" data-draw="brief-a"></div></div>
+          <div class="card span-6 card-accent"><div class="card-h"><div><h3>Rekomendasi</h3></div></div><div class="brief" data-draw="brief-r"></div></div>
+        </div>
+      </section>
+
+      <section id="sec-daftar" class="sec" aria-labelledby="h-daftar">
+        <div class="card flush">
+          <div class="card-h pad">
+            <div><h2 id="h-daftar">Daftar konten</h2><p data-draw="feed-count">—</p></div>
+            <button type="button" class="btn export-btn"><svg class="ic"><use href="#i-download"/></svg>Unduh CSV</button>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <caption class="sr-only">Konten negatif dalam periode dan saringan aktif. Pilih baris untuk melihat detail.</caption>
+              <thead><tr>
+                <th scope="col" data-col="waktu"><button type="button" class="th-b" data-sort="waktu">Waktu<svg class="ic"><use href="#i-sort"/></svg></button></th>
+                <th scope="col" data-col="kanal"><button type="button" class="th-b" data-sort="kanal">Kanal<svg class="ic"><use href="#i-sort"/></svg></button></th>
+                <th scope="col" data-col="sumber"><button type="button" class="th-b" data-sort="sumber">Sumber<svg class="ic"><use href="#i-sort"/></svg></button></th>
+                <th scope="col">Judul atau isi</th>
+                <th scope="col" data-col="lini"><button type="button" class="th-b" data-sort="lini">Lini<svg class="ic"><use href="#i-sort"/></svg></button></th>
+                <th scope="col" data-col="isu"><button type="button" class="th-b" data-sort="isu">Isu<svg class="ic"><use href="#i-sort"/></svg></button></th>
+                <th scope="col" class="r" data-col="views"><button type="button" class="th-b" data-sort="views">Tayangan<svg class="ic"><use href="#i-sort"/></svg></button></th>
+                <th scope="col"><span class="sr-only">Tautan</span></th>
+              </tr></thead>
+              <tbody data-draw="feed"></tbody>
+            </table>
+          </div>
+          <div class="pager" data-draw="pager"></div>
+        </div>
+      </section>
+
+      <section id="sec-metodologi" class="sec" aria-labelledby="h-metodologi">
+        <details class="card notes">
+          <summary><h2 id="h-metodologi">Metodologi dan batasan data</h2></summary>
+          <p>Satu hari pemantauan mencakup konten sejak pukul 16.00 WIB hari sebelumnya sampai pukul 16.00 WIB hari laporan. Pencarian memakai kata kunci Sinarmas, Sinar Mas, Bank Sinarmas, Sinar Mas Land, BSD, APP, GAR, Smartfren, MyRepublic, Filma, dan Paseo di media online, Threads, dan X.</p>
+          <p>Konten netral, tanpa sentimen, atau promosi dibuang. Konten yang tersisa berstatus kandidat sampai diputuskan reviewer. Sentimen dan pengelompokan isu adalah penilaian analis, bukan label otomatis dari platform. Konten yang menyangkut dua lini bisnis dihitung pada lini pertama.</p>
+          <p>Angka tayangan, suka, dan unggah ulang adalah angka saat data diambil dan hanya tersedia untuk sebagian unggahan. Tampilan mingguan, bulanan, dan tahunan menjumlahkan hari pemantauan yang sudah masuk, sehingga periode yang baru berisi sedikit hari belum mencerminkan periode penuh.</p>
+          <p>Data 5 Oktober sampai 11 November 2026 disalin dari alert harian dan sheet pemantauan, bukan dari tabel per konten. Untuk periode itu hanya konten negatif yang tercatat, sehingga Total temuan sama dengan Konten negatif dan Porsi negatif terbaca 100%. Jam unggah, sebagian nama akun, dan sebagian angka interaksi juga tidak tercatat. Unggahan 21 Oktober, 10 November, dan 11 November sebagian hanya diklasifikasikan per lini bisnis, sehingga isunya diisi dari tema alert hari itu. Tidak ada data 23 Oktober sampai 9 November.</p>
+          <p>Data mentah: <a href="../data/entries.json">konten terbaru</a>, <a href="../data/riwayat.json">riwayat konten</a>, <a href="../data/briefs.json">temuan terbaru</a>, <a href="../data/briefs_riwayat.json">riwayat temuan</a>.</p>
+        </details>
+      </section>
+
+      <footer class="foot">Tempo Data Science · Laporan pemantauan media untuk Sinar Mas Group · Versi 2</footer>
+    </main>
+  </div>
+</div>
+
+<div class="drawer-wrap" hidden>
+  <div class="drawer-scrim"></div>
+  <div class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+    <div class="drawer-h">
+      <h2 id="drawer-title">Detail konten</h2>
+      <button type="button" class="icon-btn drawer-close" aria-label="Tutup detail"><svg class="ic"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="drawer-b" id="drawer-body"></div>
+  </div>
+</div>
+<div class="tip" role="tooltip" hidden></div>
+<div class="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="../vendor/d3.min.js"></script>
+<script src="dash.js"></script>
+<script src="../calc.js"></script>
+<script src="app.js"></script>
+<script>dash._start();</script>
+</body>
+</html>
